@@ -9,5 +9,7 @@ The goal is to calculate the sum of the two "integers" as represented in another
 
 ## Solutions
 ### Iterative
+Walk through both lists adding the "digits" and propagating a carry as necessary. Nothing
+too fancy.
 
 # Observations
