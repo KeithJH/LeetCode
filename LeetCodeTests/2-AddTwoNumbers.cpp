@@ -1,4 +1,5 @@
 #include <catch2/catch_all.hpp>
+#include <list>
 
 #include "../LeetCodeLib/2-AddTwoNumbers/Solutions.h"
 
@@ -27,21 +28,41 @@ static void RequireListHasExpectedValues(ListNode *list, const std::initializer_
 	REQUIRE(list == nullptr);
 }
 
-static ListNode *ListFromDigits(const std::vector<int> &digits)
+static ListNode *ListFromDigits(const std::vector<int> &digits, const std::size_t thrashSize = 0)
 {
 	ListNode *list = nullptr;
 	ListNode *previous = nullptr;
+
+	std::list<std::size_t> thrash;
 
 	for (const auto value : digits)
 	{
 		list = new ListNode(value, previous);
 		previous = list;
+
+		for (std::size_t x = 0; x < thrashSize; ++x)
+		{
+			thrash.push_back(x);
+		}
 	}
 
 	return list;
 }
 
-static long ValueFromList(ListNode* list)
+static ListNode *ArrayFromDigits(const std::vector<int> &digits)
+{
+	auto arrayOfListNodes = new ListNode[digits.size()];
+
+	for (std::size_t i = 0; i < digits.size(); i++)
+	{
+		arrayOfListNodes[i].next = i + 1 < digits.size() ? &arrayOfListNodes[i + 1] : nullptr;
+		arrayOfListNodes[i].val = digits[digits.size() - i - 1];
+	}
+
+	return arrayOfListNodes;
+}
+
+static long ValueFromList(ListNode *list)
 {
 	long resultValue = 0;
 	long factor = 1;
@@ -123,6 +144,100 @@ TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][I
 	DeleteList(result);
 	DeleteList(list1);
 	DeleteList(list2);
+}
+
+TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
+{
+	auto list1Size = GENERATE(1, 10, 20, 100, 1'000, 10'000, 100'000, 1'000'000, 2'000'000);
+
+	DYNAMIC_SECTION("Size: " << list1Size)
+	{
+		auto list2Size = list1Size;
+
+		auto list1Digits = GENERATE_COPY(take(1, chunk(list1Size, random(0, 9))));
+		auto list2Digits = GENERATE_COPY(take(1, chunk(list2Size, random(0, 9))));
+
+		AddTwoNumbers::Iterative solver{};
+
+		// Test lists created calling `new ListNode`
+		{
+			ListNode *listFromNew1 = ListFromDigits(list1Digits);
+			ListNode *listFromNew2 = ListFromDigits(list2Digits);
+
+			BENCHMARK_ADVANCED("Iterative")(Catch::Benchmark::Chronometer meter)
+			{
+				std::vector<ListNode *> results;
+				results.reserve(meter.runs());
+
+				meter.measure([&solver, &results, &listFromNew1, &listFromNew2] {
+					auto result = solver.addTwoNumbers(listFromNew1, listFromNew2);
+					results.push_back(result);
+					return result;
+				});
+
+				for (const auto &result : results)
+				{
+					DeleteList(result);
+				}
+			};
+
+			DeleteList(listFromNew1);
+			DeleteList(listFromNew2);
+		}
+
+		// Test lists created calling `new ListNode` while thrashing the heap
+		// to avoid contiguous memory
+		{
+			ListNode *listFromThrashedNew1 = ListFromDigits(list1Digits, 4);
+			ListNode *listFromThrashedNew2 = ListFromDigits(list2Digits, 4);
+
+			BENCHMARK_ADVANCED("Iterative (thrash heap for input)")(Catch::Benchmark::Chronometer meter)
+			{
+				std::vector<ListNode *> results;
+				results.reserve(meter.runs());
+
+				meter.measure([&solver, &results, &listFromThrashedNew1, &listFromThrashedNew2] {
+					auto result = solver.addTwoNumbers(listFromThrashedNew1, listFromThrashedNew2);
+					results.push_back(result);
+					return result;
+				});
+
+				for (const auto &result : results)
+				{
+					DeleteList(result);
+				}
+			};
+
+			DeleteList(listFromThrashedNew1);
+			DeleteList(listFromThrashedNew2);
+		}
+
+		// Test lists created from arrays (`new ListNode[]`)
+		{
+			auto listFromArray1 = ArrayFromDigits(list1Digits);
+			auto listFromArray2 = ArrayFromDigits(list2Digits);
+
+			BENCHMARK_ADVANCED("Iterative (contiguous input)")(Catch::Benchmark::Chronometer meter)
+			{
+				std::vector<ListNode *> results;
+				results.reserve(meter.runs());
+
+				meter.measure([&solver, &results, &listFromArray1, &listFromArray2] {
+					auto result = solver.addTwoNumbers(listFromArray1, listFromArray2);
+					results.push_back(result);
+					return result;
+				});
+
+				for (const auto &result : results)
+				{
+					DeleteList(result);
+				}
+			};
+
+			delete[] listFromArray1;
+			delete[] listFromArray2;
+		}
+	}
 }
 
 } // namespace AddTwoNumbers
