@@ -1,0 +1,7 @@
+# Build directory
+out/
+build/
+Testing/
+
+# Editor files
+.vs/
