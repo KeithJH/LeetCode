@@ -15,7 +15,7 @@ static void DeleteList(ListNode *list)
 	}
 }
 
-static void RequireListHasExpectedValues(ListNode *list, std::initializer_list<int> expectedValues)
+static void RequireListHasExpectedValues(ListNode *list, const std::initializer_list<int> expectedValues)
 {
 	for (const auto expectedValue : expectedValues)
 	{
@@ -27,7 +27,36 @@ static void RequireListHasExpectedValues(ListNode *list, std::initializer_list<i
 	REQUIRE(list == nullptr);
 }
 
-TEST_CASE("AddTwoNumbers solved Iteratively", "[2][AddTwoNumbers][Iterative]")
+static ListNode *ListFromDigits(const std::vector<int> &digits)
+{
+	ListNode *list = nullptr;
+	ListNode *previous = nullptr;
+
+	for (const auto value : digits)
+	{
+		list = new ListNode(value, previous);
+		previous = list;
+	}
+
+	return list;
+}
+
+static long ValueFromList(ListNode* list)
+{
+	long resultValue = 0;
+	long factor = 1;
+
+	while (list)
+	{
+		resultValue += factor * list->val;
+		list = list->next;
+		factor *= 10;
+	}
+
+	return resultValue;
+}
+
+TEST_CASE("AddTwoNumbers Given Tests solved Iteratively", "[2][AddTwoNumbers][Iterative]")
 {
 	AddTwoNumbers::Iterative solver{};
 
@@ -69,4 +98,31 @@ TEST_CASE("AddTwoNumbers solved Iteratively", "[2][AddTwoNumbers][Iterative]")
 		DeleteList(result);
 	}
 }
+
+// May eventually want to change this to run only explicitly with tag "[.]"
+TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][Iterative][Random]")
+{
+	auto list1Size = GENERATE(take(1, random(1, 18)));
+	auto list2Size = GENERATE(take(1, random(1, 18)));
+
+	auto list1Digits = GENERATE_COPY(take(100, chunk(list1Size, random(0, 9))));
+	auto list2Digits = GENERATE_COPY(take(100, chunk(list2Size, random(0, 9))));
+
+	ListNode *list1 = ListFromDigits(list1Digits);
+	auto list1Value = ValueFromList(list1);
+
+	ListNode *list2 = ListFromDigits(list2Digits);
+	auto list2Value = ValueFromList(list2);
+
+	AddTwoNumbers::Iterative solver{};
+	auto result = solver.addTwoNumbers(list1, list2);
+	long resultValue = ValueFromList(result);
+
+	REQUIRE(list1Value + list2Value == resultValue);
+
+	DeleteList(result);
+	DeleteList(list1);
+	DeleteList(list2);
+}
+
 } // namespace AddTwoNumbers
