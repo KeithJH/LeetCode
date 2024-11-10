@@ -184,7 +184,7 @@ static void AddTwoNumbersListBenchmark(Solver &solver, ListNode *list1, ListNode
 
 TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 {
-	const int MAX_RECURSIVE_BENCH = 10'000;
+	const int MAX_RECURSIVE_BENCH = 1'000;
 
 	auto list1Size = GENERATE(1, 10, 20, 100, 1'000, 10'000, 100'000, 1'000'000, 2'000'000);
 
