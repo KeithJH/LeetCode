@@ -13,5 +13,6 @@ Walk through both lists adding the "digits" and propagating a carry as necessary
 too fancy.
 
 ### Recursive
+Nothing special again, though less feasible with large sized inputs due to stack limits
 
 # Observations

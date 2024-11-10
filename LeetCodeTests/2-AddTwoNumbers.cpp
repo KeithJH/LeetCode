@@ -151,8 +151,29 @@ TEST_CASE("AddTwoNumbers Random Tests solved Recursively", "[2][AddTwoNumbers][R
 	AddTwoNumbersRandomTests(solver);
 }
 
+template <typename Solver>
+static void AddTwoNumbersListBenchmark(Solver &solver, ListNode *list1, ListNode *list2,
+                                       Catch::Benchmark::Chronometer &meter)
+{
+	std::vector<ListNode *> results;
+	results.reserve(meter.runs());
+
+	meter.measure([&solver, &results, &list1, &list2] {
+		auto result = solver.addTwoNumbers(list1, list2);
+		results.push_back(result);
+		return result;
+	});
+
+	for (const auto &result : results)
+	{
+		DeleteList(result);
+	}
+}
+
 TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 {
+	const int MAX_RECURSIVE_BENCH = 10'000;
+
 	auto list1Size = GENERATE(1, 10, 20, 100, 1'000, 10'000, 100'000, 1'000'000, 2'000'000);
 
 	DYNAMIC_SECTION("Size: " << list1Size)
@@ -162,7 +183,8 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 		auto list1Digits = GENERATE_COPY(take(1, chunk(list1Size, random(0, 9))));
 		auto list2Digits = GENERATE_COPY(take(1, chunk(list2Size, random(0, 9))));
 
-		AddTwoNumbers::Iterative solver{};
+		AddTwoNumbers::Iterative iterativeSolver{};
+		AddTwoNumbers::Recursive recursiveSolver{};
 
 		// Test lists created calling `new ListNode`
 		{
@@ -171,20 +193,16 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 
 			BENCHMARK_ADVANCED("Iterative")(Catch::Benchmark::Chronometer meter)
 			{
-				std::vector<ListNode *> results;
-				results.reserve(meter.runs());
-
-				meter.measure([&solver, &results, &listFromNew1, &listFromNew2] {
-					auto result = solver.addTwoNumbers(listFromNew1, listFromNew2);
-					results.push_back(result);
-					return result;
-				});
-
-				for (const auto &result : results)
-				{
-					DeleteList(result);
-				}
+				AddTwoNumbersListBenchmark(iterativeSolver, listFromNew1, listFromNew2, meter);
 			};
+
+			if (list1Size <= MAX_RECURSIVE_BENCH)
+			{
+				BENCHMARK_ADVANCED("Recursive")(Catch::Benchmark::Chronometer meter)
+				{
+					AddTwoNumbersListBenchmark(recursiveSolver, listFromNew1, listFromNew2, meter);
+				};
+			}
 
 			DeleteList(listFromNew1);
 			DeleteList(listFromNew2);
@@ -198,20 +216,16 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 
 			BENCHMARK_ADVANCED("Iterative (thrash heap for input)")(Catch::Benchmark::Chronometer meter)
 			{
-				std::vector<ListNode *> results;
-				results.reserve(meter.runs());
-
-				meter.measure([&solver, &results, &listFromThrashedNew1, &listFromThrashedNew2] {
-					auto result = solver.addTwoNumbers(listFromThrashedNew1, listFromThrashedNew2);
-					results.push_back(result);
-					return result;
-				});
-
-				for (const auto &result : results)
-				{
-					DeleteList(result);
-				}
+				AddTwoNumbersListBenchmark(iterativeSolver, listFromThrashedNew1, listFromThrashedNew2, meter);
 			};
+
+			if (list1Size <= MAX_RECURSIVE_BENCH)
+			{
+				BENCHMARK_ADVANCED("Recursive (thrash heap for input)")(Catch::Benchmark::Chronometer meter)
+				{
+					AddTwoNumbersListBenchmark(recursiveSolver, listFromThrashedNew1, listFromThrashedNew2, meter);
+				};
+			}
 
 			DeleteList(listFromThrashedNew1);
 			DeleteList(listFromThrashedNew2);
@@ -224,20 +238,16 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 
 			BENCHMARK_ADVANCED("Iterative (contiguous input)")(Catch::Benchmark::Chronometer meter)
 			{
-				std::vector<ListNode *> results;
-				results.reserve(meter.runs());
-
-				meter.measure([&solver, &results, &listFromArray1, &listFromArray2] {
-					auto result = solver.addTwoNumbers(listFromArray1, listFromArray2);
-					results.push_back(result);
-					return result;
-				});
-
-				for (const auto &result : results)
-				{
-					DeleteList(result);
-				}
+				AddTwoNumbersListBenchmark(iterativeSolver, listFromArray1, listFromArray2, meter);
 			};
+
+			if (list1Size <= MAX_RECURSIVE_BENCH)
+			{
+				BENCHMARK_ADVANCED("Recursive (contiguous input)")(Catch::Benchmark::Chronometer meter)
+				{
+					AddTwoNumbersListBenchmark(iterativeSolver, listFromArray1, listFromArray2, meter);
+				};
+			}
 
 			delete[] listFromArray1;
 			delete[] listFromArray2;
