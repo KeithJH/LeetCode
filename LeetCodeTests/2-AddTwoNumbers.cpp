@@ -77,52 +77,34 @@ static long ValueFromList(ListNode *list)
 	return resultValue;
 }
 
-TEST_CASE("AddTwoNumbers Given Tests solved Iteratively", "[2][AddTwoNumbers][Iterative]")
+template <typename Solver>
+static void AddTwoNumbersBasicTest(const Solver solver, const std::initializer_list<int> list1Digits,
+                                   const std::initializer_list<int> list2Digits,
+                                   const std::initializer_list<int> expectedResult)
 {
-	AddTwoNumbers::Iterative solver{};
+	ListNode *list1 = ListFromDigits(list1Digits);
+	ListNode *list2 = ListFromDigits(list2Digits);
 
-	SECTION("Case 1")
-	{
-		ListNode *list1 = new ListNode(2, new ListNode(4, new ListNode(3)));
-		ListNode *list2 = new ListNode(5, new ListNode(6, new ListNode(4)));
+	auto result = solver.addTwoNumbers(list1, list2);
+	RequireListHasExpectedValues(result, expectedResult);
 
-		auto result = solver.addTwoNumbers(&list1[0], &list2[0]);
-		RequireListHasExpectedValues(result, {7, 0, 8});
-
-		DeleteList(result);
-		DeleteList(list1);
-		DeleteList(list2);
-	}
-
-	SECTION("Case 2")
-	{
-		ListNode list1(0);
-		ListNode list2(0);
-
-		auto result = solver.addTwoNumbers(&list1, &list2);
-		RequireListHasExpectedValues(result, {0});
-
-		DeleteList(result);
-	}
-
-	SECTION("Case 3")
-	{
-		ListNode *list1 = new ListNode(
-			9, new ListNode(9, new ListNode(9, new ListNode(9, new ListNode(9, new ListNode(9, new ListNode(9)))))));
-		ListNode *list2 = new ListNode(9, new ListNode(9, new ListNode(9, new ListNode(9))));
-
-		auto result = solver.addTwoNumbers(list1, list2);
-		RequireListHasExpectedValues(result, {8, 9, 9, 9, 0, 0, 0, 1});
-
-		DeleteList(list1);
-		DeleteList(list2);
-		DeleteList(result);
-	}
+	DeleteList(result);
+	DeleteList(list1);
+	DeleteList(list2);
 }
 
-// May eventually want to change this to run only explicitly with tag "[.]"
-TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][Iterative][Random]")
+template <typename Solver> static void AddTwoNumbersBasicTests(const Solver solver)
 {
+	SECTION("Case 1") { AddTwoNumbersBasicTest(solver, {2, 4, 3}, {5, 6, 4}, {7, 0, 8}); }
+
+	SECTION("Case 2") { AddTwoNumbersBasicTest(solver, {0}, {0}, {0}); }
+
+	SECTION("Case 3") { AddTwoNumbersBasicTest(solver, {9, 9, 9, 9, 9, 9, 9}, {9, 9, 9, 9}, {8, 9, 9, 9, 0, 0, 0, 1}); }
+}
+
+template <typename Solver> static void AddTwoNumbersRandomTests(const Solver solver)
+{
+
 	auto list1Size = GENERATE(take(1, random(1, 18)));
 	auto list2Size = GENERATE(take(1, random(1, 18)));
 
@@ -135,7 +117,6 @@ TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][I
 	ListNode *list2 = ListFromDigits(list2Digits);
 	auto list2Value = ValueFromList(list2);
 
-	AddTwoNumbers::Iterative solver{};
 	auto result = solver.addTwoNumbers(list1, list2);
 	long resultValue = ValueFromList(result);
 
@@ -144,6 +125,30 @@ TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][I
 	DeleteList(result);
 	DeleteList(list1);
 	DeleteList(list2);
+}
+
+TEST_CASE("AddTwoNumbers Given Tests solved Iteratively", "[2][AddTwoNumbers][Iterative]")
+{
+	AddTwoNumbers::Iterative solver{};
+	AddTwoNumbersBasicTests(solver);
+}
+
+TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][Iterative][Random]")
+{
+	AddTwoNumbers::Iterative solver{};
+	AddTwoNumbersRandomTests(solver);
+}
+
+TEST_CASE("AddTwoNumbers Given Tests solved Recursively", "[2][AddTwoNumbers][Recursive]")
+{
+	AddTwoNumbers::Recursive solver{};
+	AddTwoNumbersBasicTests(solver);
+}
+
+TEST_CASE("AddTwoNumbers Random Tests solved Recursively", "[2][AddTwoNumbers][Recursive][Random]")
+{
+	AddTwoNumbers::Recursive solver{};
+	AddTwoNumbersRandomTests(solver);
 }
 
 TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
@@ -239,5 +244,4 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 		}
 	}
 }
-
 } // namespace AddTwoNumbers

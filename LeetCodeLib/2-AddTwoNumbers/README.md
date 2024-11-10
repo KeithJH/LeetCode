@@ -12,4 +12,6 @@ The goal is to calculate the sum of the two "integers" as represented in another
 Walk through both lists adding the "digits" and propagating a carry as necessary. Nothing
 too fancy.
 
+### Recursive
+
 # Observations
