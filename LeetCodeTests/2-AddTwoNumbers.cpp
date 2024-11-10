@@ -139,6 +139,18 @@ TEST_CASE("AddTwoNumbers Random Tests solved Iteratively", "[2][AddTwoNumbers][I
 	AddTwoNumbersRandomTests(solver);
 }
 
+TEST_CASE("AddTwoNumbers Given Tests solved Iteratively (cleaner)", "[2][AddTwoNumbers][CleanIterative]")
+{
+	AddTwoNumbers::CleanIterative solver{};
+	AddTwoNumbersBasicTests(solver);
+}
+
+TEST_CASE("AddTwoNumbers Random Tests solved Iteratively (cleaner)", "[2][AddTwoNumbers][CleanIterative][Random]")
+{
+	AddTwoNumbers::CleanIterative solver{};
+	AddTwoNumbersRandomTests(solver);
+}
+
 TEST_CASE("AddTwoNumbers Given Tests solved Recursively", "[2][AddTwoNumbers][Recursive]")
 {
 	AddTwoNumbers::Recursive solver{};
@@ -184,6 +196,7 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 		auto list2Digits = GENERATE_COPY(take(1, chunk(list2Size, random(0, 9))));
 
 		AddTwoNumbers::Iterative iterativeSolver{};
+		AddTwoNumbers::CleanIterative cleanIterativeSolver{};
 		AddTwoNumbers::Recursive recursiveSolver{};
 
 		// Test lists created calling `new ListNode`
@@ -194,6 +207,11 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 			BENCHMARK_ADVANCED("Iterative")(Catch::Benchmark::Chronometer meter)
 			{
 				AddTwoNumbersListBenchmark(iterativeSolver, listFromNew1, listFromNew2, meter);
+			};
+
+			BENCHMARK_ADVANCED("Clean Iterative")(Catch::Benchmark::Chronometer meter)
+			{
+				AddTwoNumbersListBenchmark(cleanIterativeSolver, listFromNew1, listFromNew2, meter);
 			};
 
 			if (list1Size <= MAX_RECURSIVE_BENCH)
@@ -219,6 +237,11 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 				AddTwoNumbersListBenchmark(iterativeSolver, listFromThrashedNew1, listFromThrashedNew2, meter);
 			};
 
+			BENCHMARK_ADVANCED("Clean Iter. (thrash heap for input)")(Catch::Benchmark::Chronometer meter)
+			{
+				AddTwoNumbersListBenchmark(cleanIterativeSolver, listFromThrashedNew1, listFromThrashedNew2, meter);
+			};
+
 			if (list1Size <= MAX_RECURSIVE_BENCH)
 			{
 				BENCHMARK_ADVANCED("Recursive (thrash heap for input)")(Catch::Benchmark::Chronometer meter)
@@ -239,6 +262,11 @@ TEST_CASE("AddTwoNumbers Benchmarks", "[2][AddTwoNumbers][!benchmark]")
 			BENCHMARK_ADVANCED("Iterative (contiguous input)")(Catch::Benchmark::Chronometer meter)
 			{
 				AddTwoNumbersListBenchmark(iterativeSolver, listFromArray1, listFromArray2, meter);
+			};
+
+			BENCHMARK_ADVANCED("Clean Iterative (contiguous input)")(Catch::Benchmark::Chronometer meter)
+			{
+				AddTwoNumbersListBenchmark(cleanIterativeSolver, listFromArray1, listFromArray2, meter);
 			};
 
 			if (list1Size <= MAX_RECURSIVE_BENCH)

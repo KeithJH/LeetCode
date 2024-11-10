@@ -18,6 +18,12 @@ class Iterative
 	ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) const;
 };
 
+class CleanIterative
+{
+  public:
+	ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) const;
+};
+
 class Recursive
 {
   public:

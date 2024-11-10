@@ -12,6 +12,9 @@ The goal is to calculate the sum of the two "integers" as represented in another
 Walk through both lists adding the "digits" and propagating a carry as necessary. Nothing
 too fancy.
 
+### Clean Iterative
+Same general strategy but combines "phases" into a single loop.
+
 ### Recursive
 Nothing special again, though less feasible with large sized inputs due to stack limits
 
