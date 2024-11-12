@@ -12,4 +12,6 @@ return the new logical size of `nums`.
 Naive solution that searches linearly for each element that is not `val` and fills it into the next
 location of `nums`. This likely will require more writes than necessary.
 
+### Swap
+
 ## Observations

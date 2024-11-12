@@ -8,7 +8,8 @@
 
 namespace RemoveElement
 {
-static void TestCase(const Fill solver, std::vector<int> &nums, const int toRemove,
+template <typename Solver>
+static void TestCase(const Solver solver, std::vector<int> &nums, const int toRemove,
                      const std::unordered_map<int, ptrdiff_t> &expectedCounts)
 {
 	size_t expectedResult = 0;
@@ -24,10 +25,8 @@ static void TestCase(const Fill solver, std::vector<int> &nums, const int toRemo
 	}
 }
 
-TEST_CASE("RemoveElement Given Tests", "[27][RemoveElement]")
+template <typename Solver> static void GivenTestCases(Solver solver)
 {
-	RemoveElement::Fill solver{};
-
 	SECTION("Case 1")
 	{
 		std::vector<int> input{3, 2, 2, 3};
@@ -45,10 +44,8 @@ TEST_CASE("RemoveElement Given Tests", "[27][RemoveElement]")
 	}
 }
 
-TEST_CASE("RemoveElement Additional Tests", "[27][RemoveElement]")
+template <typename Solver> static void AdditionalTestCases(Solver solver)
 {
-	RemoveElement::Fill solver{};
-
 	SECTION("Empty input")
 	{
 		std::vector<int> input{};
@@ -72,5 +69,25 @@ TEST_CASE("RemoveElement Additional Tests", "[27][RemoveElement]")
 
 		TestCase(solver, input, 3, expectedCounts);
 	}
+}
+
+TEST_CASE("RemoveElement Given Tests solved with Fill", "[27][RemoveElement][Fill]")
+{
+	GivenTestCases(RemoveElement::Fill{});
+}
+
+TEST_CASE("RemoveElement Additional Tests solved with Fill", "[27][RemoveElement][Fill]")
+{
+	AdditionalTestCases(RemoveElement::Fill{});
+}
+
+TEST_CASE("RemoveElement Given Tests solved with Swap", "[27][RemoveElement][Swap]")
+{
+	GivenTestCases(RemoveElement::Swap{});
+}
+
+TEST_CASE("RemoveElement Additional Tests solved with Swap", "[27][RemoveElement][Swap]")
+{
+	AdditionalTestCases(RemoveElement::Swap{});
 }
 } // namespace RemoveElement
