@@ -1,6 +1,6 @@
 ﻿# CMakeList.txt : CMake project for LeetCodeTests
 
-add_executable (LeetCodeTests "1-TwoSumTests.cpp" "2-AddTwoNumbers.cpp" "26-RemoveDuplicates.cpp")
+add_executable (LeetCodeTests "1-TwoSumTests.cpp" "2-AddTwoNumbers.cpp" "26-RemoveDuplicates.cpp" "27-RemoveElement.cpp")
 target_link_libraries(LeetCodeTests PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(LeetCodeTests PRIVATE LeetCodeLib)
 target_compile_options(LeetCodeTests PRIVATE ${WARNING_OPTIONS})
