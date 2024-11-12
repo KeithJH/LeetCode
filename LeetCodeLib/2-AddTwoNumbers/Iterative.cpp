@@ -2,7 +2,7 @@
 
 namespace AddTwoNumbers
 {
-inline int EvaluateSumSetCarry(int value, int &outCarry)
+int EvaluateSumSetCarry(int value, int &outCarry)
 {
 	outCarry = 0;
 	if (value >= 10)
@@ -14,7 +14,7 @@ inline int EvaluateSumSetCarry(int value, int &outCarry)
 	return value;
 }
 
-inline ListNode *InsertListNode(ListNode *current, int nodeValue)
+ListNode *InsertListNode(ListNode *current, int nodeValue)
 {
 	ListNode *next = new ListNode(nodeValue);
 	current->next = next;
