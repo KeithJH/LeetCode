@@ -2,7 +2,7 @@
 
 namespace RemoveElement
 {
-size_t Solution::removeElement(std::vector<int> &nums, int val) const
+size_t Fill::removeElement(std::vector<int> &nums, int val) const
 {
 	size_t fillIndex = 0;
 	size_t searchIndex = 0;

@@ -3,7 +3,7 @@
 
 namespace RemoveElement
 {
-class Solution
+class Fill
 {
   public:
 	size_t removeElement(std::vector<int> &nums, int val) const;
