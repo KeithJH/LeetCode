@@ -13,5 +13,7 @@ Naive solution that searches linearly for each element that is not `val` and fil
 location of `nums`. This likely will require more writes than necessary.
 
 ### Swap
+Converge two pointers, one from the beginning and the other from the end, such that valid values
+are swapped towards the beginning and invalid values are swapped to the end.
 
 ## Observations

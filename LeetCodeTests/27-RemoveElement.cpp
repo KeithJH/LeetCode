@@ -13,7 +13,7 @@ static void TestCase(const Solver solver, std::vector<int> &nums, const int toRe
                      const std::unordered_map<int, ptrdiff_t> &expectedCounts)
 {
 	size_t expectedResult = 0;
-	expectedResult = std::reduce(
+	expectedResult = std::accumulate(
 		expectedCounts.cbegin(), expectedCounts.cend(), expectedResult,
 		[](size_t sum, const std::map<int, ptrdiff_t>::value_type &element) { return sum + element.second; });
 	auto result = solver.removeElement(nums, toRemove);
