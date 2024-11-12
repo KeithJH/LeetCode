@@ -18,7 +18,7 @@ Same general strategy but combines "phases" into a single loop.
 ### Recursive
 Nothing special again, though less feasible with large sized inputs due to stack limits
 
-# Observations
+## Observations
 Comparisons were done on multiple dimensions, including platform (Windows versus WSL), compiler,
 memory layout, solution, and of course input size (in terms of number of nodes for each list).
 
@@ -31,7 +31,7 @@ $ ./out/build/linux-gcc-release/LeetCodeTests/LeetCodeTests --benchmark-no-analy
 Windows results are indicated by runs with MSVC and Ubuntu (under WSL 2) with GCC. Clang-CL and
 Clang++ did not show very different results and are not included for brevity.
 
-## Memory Layout
+### Memory Layout
 The most interesting experiments were with memory layout, where input lists are created in one of
 three ways. Regardless of method all operations still performed were done with the linked-list-like
 structure, but there are still benefits to be gained from data locality and cache friendliness.
@@ -46,21 +46,21 @@ be contiguous.
 As expected, when memory is contiguous, even with linked-list-like operations, all solutions
 perform much better. This is especially true compared to purposefully thrashed allocations.
 
-## Solutions
-### Recursive
+### Solutions
+#### Recursive
 The data becomes a bit hard to compare as this solution does not scale due to stack size
 limitations. At 10,000 elements, however, you can start to see that it's at least similar to the
 other two solutions.
 
-### Iterative
+#### Iterative
 As expected this is generally the best performing option and scales roughly linearly.
 
-### Clean Iterative
+#### Clean Iterative
 The difference between this and the original Iterative solution is fairly small and becomes even
 less noticeable if memory is non-contiguous.
 
-## Platform
-### Windows 11
+### Platform
+#### Windows 11
 Surprisingly runs with both MSVC and Clang-CL on these Windows 11 runs are noticeably slower than
 any of the runs even under WSL on the same system.
 
@@ -68,12 +68,12 @@ Another thing that stands out here is that `new ListNode()` by default appears t
 contiguous memory as there is substantial performance improvement by manually ensuring contiguous
 node layout. There is still, however, additional performance degradation when thrashing the heap.
 
-### Ubuntu 22.04 (WSL 2)
+#### Ubuntu 22.04 (WSL 2)
 Very good results outperforming the native Windows runs. It also appears that `new ListNode()` by
 default was allocating more contiguous memory for us.
 
-# Benchmark Results
-## Time spent by Solution, Compiler, and Memory Layout for lists of 10,000 elements
+## Benchmark Results
+### Time spent by Solution, Compiler, and Memory Layout for lists of 10,000 elements
 |                     |      | thrashed new* | default new* | contiguous new[] |
 |---------------------|------|---------------|--------------|------------------|
 | **Iterative**       |      |               |              |                  |
@@ -86,7 +86,7 @@ default was allocating more contiguous memory for us.
 |                     | msvc | 195.6 us      | 174.66 us    | 149.10 us        |
 |                     | gcc  | 156.08 us     | 97.51 us     | 64.09 us         |
 
-## Time spent by Solution, Compiler, and Memory Layout for lists of 2 million elements
+### Time spent by Solution, Compiler, and Memory Layout for lists of 2 million elements
 |                     |      | thrashed new* | default new* | contiguous new[] |
 |---------------------|------|---------------|--------------|------------------|
 | **Iterative**       |      |               |              |                  |
@@ -96,7 +96,7 @@ default was allocating more contiguous memory for us.
 |                     | msvc | 196.06 ms     | 61.17 ms     | 32.51 ms         |
 |                     | gcc  | 125.81 ms     | 17.26 ms     | 17.39 ms         |
 
-## Time spent by list size for Contiguous Iterative Solution
+### Time spent by list size for Contiguous Iterative Solution
 |   Size    |   Time    |
 |-----------|-----------|
 | 1         |   9.09 ns |

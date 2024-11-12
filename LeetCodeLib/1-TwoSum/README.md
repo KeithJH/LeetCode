@@ -44,7 +44,7 @@ consider the memory for the hash map. Even if the memory usage is acceptable, we
 we pre-reserve some memory to avoid multiple growths over the search. While fairly pessimistic one
 solution is to just grow to the size of the `nums` vector.
 
-# Observations
+## Observations
 While the Hash Map solution is faster for larger arrays of integers, it should be noted that the
 "simpler" options require less memory and can outperform for smaller data sets. This is especially
 true if you allow the use of SIMD instructions such as in the Avx2/Avx512 solutions.
