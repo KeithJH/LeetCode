@@ -5,6 +5,7 @@ add_library (LeetCodeLib STATIC
 	"2-AddTwoNumbers/Solutions.h" "2-AddTwoNumbers/Iterative.cpp" "2-AddTwoNumbers/Recursive.cpp" "2-AddTwoNumbers/CleanIterative.cpp"
 	"26-RemoveDuplicates/Solution.cpp" "26-RemoveDuplicates/Solutions.h"
 	"27-RemoveElement/Fill.cpp" "27-RemoveElement/Swap.cpp" "27-RemoveElement/Solutions.h"
+	"88-MergeSortedArray/Solution.cpp" "88-MergeSortedArray/Solutions.h"
 )
 target_compile_options(LeetCodeLib PRIVATE ${WARNING_OPTIONS})
 target_compile_options(LeetCodeLib PRIVATE ${SANITIZER_OPTIONS})
