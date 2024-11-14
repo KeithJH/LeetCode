@@ -8,6 +8,7 @@ add_library (LeetCodeLib STATIC
 	"80-RemoveDuplicates2/Solution.cpp" "80-RemoveDuplicates2/Solutions.h"
 	"88-MergeSortedArray/Solution.cpp" "88-MergeSortedArray/Solutions.h"
 	"125-ValidPalindrome/Solution.cpp" "125-ValidPalindrome/Solutions.h"
+	"209-MinSubArrayLen/Solution.cpp" "209-MinSubArrayLen/Solutions.h"
 )
 target_compile_options(LeetCodeLib PRIVATE ${WARNING_OPTIONS})
 target_compile_options(LeetCodeLib PRIVATE ${SANITIZER_OPTIONS})
